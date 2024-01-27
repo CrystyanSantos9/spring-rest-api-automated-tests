@@ -1,6 +1,6 @@
 package dev.cryss.apiautomatedtests.controllers;
 
-import dev.cryss.apiautomatedtests.exceptions.UnsupportedMathOperationException;
+import dev.cryss.apiautomatedtests.exceptions.ResourceNotFoundException;
 import dev.cryss.apiautomatedtests.utils.SimpleMath;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,7 +25,7 @@ public class MathController {
     ) throws Exception {
 
         if (!isNumeric (numberOne) || !isNumeric (numberTwo)) {
-            throw new UnsupportedMathOperationException ("Please set a numeric value in path variables!");
+            throw new ResourceNotFoundException ("Please set a numeric value in path variables!");
         }
 
         return math.sum (convertToDouble (numberOne), convertToDouble (numberTwo));
@@ -39,7 +39,7 @@ public class MathController {
     ) throws Exception {
 
         if (!isNumeric (numberOne) || !isNumeric (numberTwo)) {
-            throw new UnsupportedMathOperationException ("Please set a numeric value in path variables!");
+            throw new ResourceNotFoundException ("Please set a numeric value in path variables!");
         }
 
         return math.sub (convertToDouble (numberOne), convertToDouble (numberTwo));
@@ -53,7 +53,7 @@ public class MathController {
     ) throws Exception {
 
         if (!isNumeric (numberOne) || !isNumeric (numberTwo)) {
-            throw new UnsupportedMathOperationException ("Please set a numeric value in path variables!");
+            throw new ResourceNotFoundException ("Please set a numeric value in path variables!");
         }
 
         return math.mult (convertToDouble (numberOne), convertToDouble (numberTwo));
@@ -67,7 +67,7 @@ public class MathController {
     ) throws Exception {
 
         if (!isNumeric (numberOne) || !isNumeric (numberTwo)) {
-            throw new UnsupportedMathOperationException ("Please set a numeric value in path variables!");
+            throw new ResourceNotFoundException ("Please set a numeric value in path variables!");
         }
 
         return math.div (convertToDouble (numberOne), convertToDouble (numberTwo));
@@ -81,7 +81,7 @@ public class MathController {
     ) throws Exception {
 
         if (!isNumeric (numberOne) || !isNumeric (numberTwo)) {
-            throw new UnsupportedMathOperationException ("Please set a numeric value in path variables!");
+            throw new ResourceNotFoundException ("Please set a numeric value in path variables!");
         }
 
         return math.mean (convertToDouble (numberOne), convertToDouble (numberTwo));
@@ -94,7 +94,7 @@ public class MathController {
     ) throws Exception {
 
         if (!isNumeric (number)) {
-            throw new UnsupportedMathOperationException ("Please set a numeric value in path variables!");
+            throw new ResourceNotFoundException ("Please set a numeric value in path variables!");
         }
 
         return math.sqrt (convertToDouble (number));

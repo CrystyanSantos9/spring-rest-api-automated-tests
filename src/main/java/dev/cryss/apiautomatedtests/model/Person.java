@@ -12,7 +12,9 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.springframework.hateoas.RepresentationModel;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 @Data
@@ -25,6 +27,7 @@ import java.io.Serializable;
 @Table(name="person")
 public class Person implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     @Id

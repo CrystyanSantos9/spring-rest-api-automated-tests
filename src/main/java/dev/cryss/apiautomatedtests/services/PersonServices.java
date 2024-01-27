@@ -1,6 +1,11 @@
 package dev.cryss.apiautomatedtests.services;
 
+import dev.cryss.apiautomatedtests.exceptions.ResourceNotFoundException;
 import dev.cryss.apiautomatedtests.model.Person;
+import dev.cryss.apiautomatedtests.repository.PersonRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.repository.ListPagingAndSortingRepository;
@@ -14,56 +19,60 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Logger;
 
 @Service
+@RequiredArgsConstructor
+@Log4j2
 public class PersonServices {
-    private final AtomicLong counter = new AtomicLong ();
-    private Logger logger = Logger.getLogger (PersonServices.class.getName ());
 
-    public Set<Person> findAll(){
-        logger.info ("Finding all people");
-        Set<Person> personSet = new HashSet<> ();
-        for(int i = 0; i<8; i++){
-            Person mockedPerson = mockPerson(i);
-            personSet.add (mockedPerson);
-        }
-        return personSet;
+    private final PersonRepository repository;
+
+    public List<Person> findAll(){
+      return repository.findAll ();
     }
     
-    public Person findById(String id) {
-        logger.info ("Finding one person");
-
-        Person person = Person.builder ()
-                .id (counter.incrementAndGet ())
-                .firstName ("Beto")
-                .lastName ("Uru")
-                .address ("Rua Vila Maria - São Paulo - Brasil")
-                .gender ("Male")
-                .build ();
-
-        return person;
+    public Person findById(Long id) {
+        return repository.findById (id).orElseThrow (
+                ()-> new ResourceNotFoundException ("No records found for this ID!")
+        );
     }
 
     public Person create(Person person){
-        logger.info ("Creating a new person " + person);
-        return person;
+        log.info ("Creating a new person " + person);
+        return repository.save (person);
     }
 
-    public Person update(Person person){
-        logger.info ("Update a person " + person);
-        return person;
-    }
+    public Person update(Person person) {
+        log.info ("Updating person id" + person.getId ());
 
-    public void delete(String id){
-        logger.info ("Removing personId " + id);
-    }
+        var entity = repository.findById (person.getId ()).orElseThrow (
+                () -> new ResourceNotFoundException ("No records found for this ID!")
+        );
 
-    private Person mockPerson(int i) {
-        Person person = Person.builder ()
-                .id (counter.incrementAndGet ())
-                .firstName ("Person " + i)
-                .lastName ("Last " + i)
-                .address ("Addres " + i)
-                .gender ("Gender " + i)
+        entity.builder ()
+                .firstName (person.getFirstName ())
+                .lastName (person.getLastName ())
+                .address (person.getAddress ())
+                .gender (person.getGender ())
                 .build ();
-        return person;
+
+        return repository.save (person);
     }
+
+    public void delete(Long id){
+        log.info ("Removing person id " + id);
+        var entity = repository.findById (id).orElseThrow (
+                () -> new ResourceNotFoundException ("No records found for this ID!")
+        );
+        repository.delete (entity);
+    }
+
+//    private Person mockPerson(int i) {
+//        Person person = Person.builder ()
+//                .id (counter.incrementAndGet ())
+//                .firstName ("Person " + i)
+//                .lastName ("Last " + i)
+//                .address ("Addres " + i)
+//                .gender ("Gender " + i)
+//                .build ();
+//        return person;
+//    }
 }
