@@ -18,13 +18,11 @@ import java.io.Serial;
 import java.io.Serializable;
 
 @Data
-@RequiredArgsConstructor
+@Builder
 @AllArgsConstructor
 @Getter
 @Setter
-@Builder
 @Entity
-@Table(name="person")
 public class Person implements Serializable {
 
     @Serial
@@ -45,5 +43,8 @@ public class Person implements Serializable {
 
     @Column(nullable = false, length = 6)
     private String gender;
+
+    @Column(nullable = false, length = 100)
+    private String email;
 
 }
