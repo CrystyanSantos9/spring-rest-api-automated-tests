@@ -40,8 +40,13 @@ public class PersonController {
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Person findById(@PathVariable(value = "id") Long id) throws Exception {
-        return service.findById (id);
+    public ResponseEntity<Person> findById(@PathVariable(value = "id") Long id) {
+        try{
+            return ResponseEntity.ok (service.findById (id));
+        }catch (Exception e){
+            return ResponseEntity.notFound ().build ();
+        }
+
     }
 
 
@@ -60,6 +65,7 @@ public class PersonController {
                 .path ("/persons/{id}")
                 .build ()
                 .expand (createdPerson.getId ()).toUri ();
+
         HttpHeaders headers = new HttpHeaders ();
         headers.setLocation (location);
 

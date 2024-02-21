@@ -23,6 +23,7 @@ import java.io.Serializable;
 @Getter
 @Setter
 @Entity
+@Table(name = "person")
 public class Person implements Serializable {
 
     @Serial

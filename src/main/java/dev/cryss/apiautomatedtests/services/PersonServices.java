@@ -6,6 +6,7 @@ import dev.cryss.apiautomatedtests.repository.PersonRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import lombok.extern.log4j.Log4j2;
+import org.aspectj.lang.annotation.Aspect;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.repository.ListPagingAndSortingRepository;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Logger;
@@ -21,27 +23,41 @@ import java.util.logging.Logger;
 @Service
 @RequiredArgsConstructor
 @Log4j2
+@Aspect
 public class PersonServices {
 
     private final PersonRepository repository;
 
     public List<Person> findAll(){
-      return repository.findAll ();
-    }
-    
-    public Person findById(Long id) {
-        return repository.findById (id).orElseThrow (
-                ()-> new ResourceNotFoundException ("No records found for this ID!")
-        );
+        List<Person> persons = repository.findAll ();
+        log.info ("List persons {}", persons);
+        return  persons;
+
     }
 
-    public Person create(Person person){
-        log.info ("Creating a new person " + person);
+    public Person findById(Long id) {
+        Person person = repository.findById (id).orElseThrow (
+                () -> new ResourceNotFoundException ("No records found for this ID!")
+        );
+
+        log.info ("Found person {}", person);
+
+        return person;
+    }
+
+    public Person create(Person person) {
+        log.info ("Creating a new person {}", person);
+        Optional<Person> savedPerson = repository.findByEmail (person.getEmail ());
+        if (savedPerson.isPresent ()) {
+            throw new ResourceNotFoundException (
+                    "Person already exist with given e-Mail: " + person.getEmail ()
+            );
+        }
         return repository.save (person);
     }
 
     public Person update(Person person) {
-        log.info ("Updating person id" + person.getId ());
+        log.info ("Updating person id {}", person.getId ());
 
         var entity = repository.findById (person.getId ()).orElseThrow (
                 () -> new ResourceNotFoundException ("No records found for this ID!")
